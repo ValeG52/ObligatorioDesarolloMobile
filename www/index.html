@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
+</head>
+
+<body>
+    <ion-app>
+        <!-- COMPONENTE DE RUTEO -->
+
+        <ion-router id="ruteo">
+            <ion-route url="/" component="page-login"></ion-route>
+            <ion-route url="/login" component="page-login"></ion-route>
+            <ion-route url="/registro" component="page-registro"></ion-route>
+            <ion-route url="/home" component="page-home"></ion-route>
+            <ion-route url="/logout" component="page-login"></ion-route>
+        </ion-router>
+        <ion-nav></ion-nav>
+
+
+        <!-- MENU -->
+        <ion-menu side="start" menu-id="first" content-id="main" id="menu">
+            <ion-header>
+                <ion-toolbar color="primary">
+                    <ion-title>Menu</ion-title>
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                <ion-list id="menuOpciones">
+
+                </ion-list>
+            </ion-content>
+        </ion-menu>
+        <div id="main"></div>
+
+        <!-- PANTALLAS -->
+        <page-home class="ion-page" id="pantalla-home">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    <ion-title>HOME</ion-title>
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                Pantalla de home
+            </ion-content>
+        </page-home>
+
+        <page-registro class="ion-page" id="pantalla-registro">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    <ion-title>Registro</ion-title>
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                <ion-list>
+                    <ion-item>
+                        <ion-input label="User" label-Placement="floating" placeholder="User" id="txtRegistroUser"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-input label="Password" type="Password" label-Placement="floating" placeholder="Password" id="txtRegistroPass"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-select label="Pais" label-placement="floating" placeholder="" id="selectRegistroPais"></ion-select>
+                    </ion-item>
+                    <div id="divRegistro">
+                    </div>
+                    <ion-button id="btnRegistro" expand="full">Registro</ion-button>
+                </ion-list>
+            </ion-content>
+        </page-registro>
+
+
+        <page-login class="ion-page" id="pantalla-login">
+            <ion-header>
+                <ion-toolbar>
+                    <ion-buttons slot="start">
+                        <ion-menu-button></ion-menu-button>
+                    </ion-buttons>
+                    <ion-title>Login</ion-title>
+                </ion-toolbar>
+            </ion-header>
+            <ion-content>
+                <ion-list>
+                    <ion-item>
+                        <ion-input label="User" label-Placement="floating" placeholder="User" id="txtLoginUser"></ion-input>
+                    </ion-item>
+                    <ion-item>
+                        <ion-input label="Password" type="Password" label-Placement="floating" placeholder="Password" id="txtLoginPass"></ion-input>
+                    </ion-item>
+                    <div id="divLogin">
+                    </div>
+                    <ion-button id="btnLogin" expand="full">Login</ion-button>
+                </ion-list>
+            </ion-content>
+        </page-login>
+
+
+
+
+    </ion-app>
+    <script src="js/codigo.js"></script>
+</body>
+</html>
