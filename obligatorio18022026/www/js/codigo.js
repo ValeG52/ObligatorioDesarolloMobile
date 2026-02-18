@@ -274,7 +274,31 @@ async function agregarPelicula(){
 
 }
 
-async function getPeliculas() {
+
+
+async function listarPeliculas() {
+    let data = await GetPeliculas();
+    if(data.codigo == 200){
+       let html = `<table>
+                        <tr>
+                            <td>Nombre</td>
+                            <td>Actor</td>
+                            <td>Casa</td>
+                            <td>Foto</td>
+                        </tr>`;
+        for(let p of lista){
+            html+= `<tr>
+                        <td>${p.idCategoria}</td>
+                        <td>${p.nombre}</td>
+                        <td>${p.fecha}</td>
+                        <td><input type="button" id="${p.Id}"value="Eliminar"></td>
+                    </tr>`;
+        }html+= `</table>`;
+        document.querySelector("#lista-pelis").innerHTML= html;
+    }
+}
+
+async function GetPeliculas() {
     let token = localStorage.getItem("token");
     let response = await fetch(`${URL_base}/peliculas`, {
         method: 'GET',
@@ -287,15 +311,36 @@ async function getPeliculas() {
     return data;
 }
 
-async function listarPeliculas() {
-    let data = await getPeliculas();
-    if(data.codigo == 200){
-        let html;
-        for(let p of data.peliculas){
-            html += `<ion-select-option value="${c.id}">${c.nombre}</ion-select-option>` ;
+async function EliminarPelicula(Id){
+    let pelicula = await GetPeliculaById(Id);
+    if(pelicula == false){
+        console.log("Peli no encontrada")
+    }else{
+    
+    let response = await fetch(`${URL_base}/peliculas/${Id}`, {
+        method: 'DELETE',
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token,
+            }
+        });
+
+        if (response.codigo == 200) {
+            console.log("Película eliminada correctamente");
+        }else{
+        console.log("Peli no encontrada");
+        return;
         }
-        document.querySelector("#selectCatPelicula").innerHTML = html;
-    }
+        
+    }  
+}
+async function GetPeliculaById(id){
+    let peliculas = await GetPeliculas();
+    for(let p of peliculas){
+        if(p.Id == id){
+            return true;
+        }
+    }return false;
 }
 /* ------------------------------------------------ FIN LOGICA DE NEGOCIO--------------------------------------------------------------- */
 
