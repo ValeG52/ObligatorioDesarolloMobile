@@ -137,7 +137,9 @@ function Navegar(evt){
         mostrarPeliculas();
         listar.style.display = "block";
     }else if(ruta == "/estads"){
+        contarCategorias();
         estads.style.display = "block";
+        
     }else if(ruta == "/mapa"){
         mapa.style.display = "block";
     }else if (ruta == "/logout"){
@@ -167,6 +169,7 @@ function validarRegistro(user,pass,pais){
 // TODO: Hacer funcion
 
     return true;
+
 }
 
 async function tokenValido(){
@@ -216,6 +219,56 @@ async function getCategorias(){
     return data;
 }
 
+
+async function contarCategorias(){
+    let data = await getPeliculas();
+    let accion = 0;
+    let comedia = 0; 
+    let drama = 0;
+    let cienciaFiccion = 0;
+    let terror = 0;
+    let animacion = 0;
+    let documental = 0;
+    let romance = 0;
+    let aventura = 0;
+    let fantasia = 0;
+    for(let p of data.peliculas){
+        if(p.idCategoria == 1){
+            accion+= 1;
+        }else if(p.idCategoria == 2){
+            comedia+= 1;
+        }else if(p.idCategoria == 3){
+            drama+= 1;
+        }else if(p.idCategoria == 4){
+            cienciaFiccion+= 1;
+        }else if(p.idCategoria == 5){
+            terror+= 1;
+        }else if(p.idCategoria == 6){
+            animacion+= 1;
+        }else if(p.idCategoria == 7){
+            documental+= 1;
+        }else if(p.idCategoria == 8){
+            romance+= 1;
+        }else if(p.idCategoria == 9){
+            aventura+= 1;
+        }else if(p.idCategoria == 10){
+            fantasia+= 1;
+        }
+        
+    }
+    document.querySelector("#accion").innerHTML = "Acción " + accion;
+    document.querySelector("#comedia").innerHTML = "Comedia " + comedia;
+    document.querySelector("#drama").innerHTML = "Drama " + drama;
+    document.querySelector("#cienciaFiccion").innerHTML = "Ciencia Ficción " + cienciaFiccion;
+    document.querySelector("#terror").innerHTML = "Terror " + terror;
+    document.querySelector("#animacion").innerHTML = "Animación " + animacion;
+    document.querySelector("#documental").innerHTML = "Documental "  + documental;
+    document.querySelector("#romance").innerHTML = "Romance " + romance;
+    document.querySelector("#aventura").innerHTML = "Aventura " + aventura;
+    document.querySelector("#fantasia").innerHTML = "Fantasía " + fantasia;
+}
+ 
+
 async function listarCategorias() {
     let data = await getCategorias();
     if(data.codigo == 200){
@@ -253,44 +306,39 @@ async function agregarPelicula(){
     
     if(idCat !== undefined && nom !== "" && nom !== " " && nom !== undefined && fecha1 !== undefined && coment !== "" && coment !== " " && coment !== undefined){
         let hoy = new Date();
-        let [year, month, day] = fecha1.split("-");
+        let [year, month, day] = fecha1.split("-"); 
         let fechaUy = new Date(year, month-1, day);
         if(fechaUy.getFullYear() <= hoy.getFullYear()){
-            if(fechaUy.getMonth() <= hoy.getMonth()){
-                if(fechaUy.getDate() <= hoy.getDate()){
-                    if( await evaluarComentario(coment) == "Neutro" || await evaluarComentario(coment) == "Positivo" ){
-                        let objPelicula= new Object();
-                        objPelicula.idCategoria = idCat;
-                        objPelicula.nombre = nom;
-                        objPelicula.fecha = fecha1;
+            if((fechaUy.getMonth() < hoy.getMonth()) || (fechaUy.getMonth() == hoy.getMonth() && fechaUy.getDate() <= hoy.getDate() )){
+                if( await evaluarComentario(coment) == "Neutro" || await evaluarComentario(coment) == "Positivo" ){
+                    let objPelicula= new Object();
+                    objPelicula.idCategoria = idCat;
+                    objPelicula.nombre = nom;
+                    objPelicula.fecha = fecha1;
+                    let token = localStorage.getItem("token");
 
-                        let token = localStorage.getItem("token");
-
-                        let response = await fetch(`${URL_base}/peliculas`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'AUTHORIZATION':'Bearer '+token,
-                        },
+                    let response = await fetch(`${URL_base}/peliculas`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'AUTHORIZATION':'Bearer '+token,                        
+                    },
                         body: JSON.stringify(objPelicula),
                         });
                         Alertar("AVISO","","Película agregada con exito.")
                         nav.push("page-listar");
-                    }else{
-                        Alertar("AVISO","Agregar película: ","El comentario no cumple con los requisitos.")
-                    }
                 }else{
-                    Alertar("AVISO","Agregar película: ","callo en el dia")
+                    Alertar("AVISO","Agregar película: ","El comentario no cumple con los requisitos.")
                 }
             }else{
-                //terminar
+                Alertar("AVISO","Agregar película: ","La fecha ingresada no puede ser posterior a la de hoy. Verifique la fecha.")
             }    
         }else{
-            Alertar("AVISO","Agregar película: ","La fecha ingresada no puede ser posterior a la de hoy.")
+            Alertar("AVISO","Agregar película: ","La fecha ingresada no puede ser posterior a la de hoy. Verifique el año.")
         }
-    }else[
+    }else{
          Alertar("AVISO","Agregar película: ","Campo/s vacios. Verifique")
-    ]
+    }
 }
 
 function funPrueba(){
@@ -315,11 +363,11 @@ function funPrueba(){
 
     //let nom = document.querySelector("#txtNomPelicula").value;
     
-    
     console.log(fechaUy.getDate())
 
     console.log( fechaUy.getDate() >= (hoy.getDate() - 7));
     console.log(hoy.getDate() - 7)
+
 }
 
 async function getPeliculas() {
@@ -335,15 +383,25 @@ async function getPeliculas() {
     return data;
 }
 
+async function getEmojiById(id){
+    let data = await getCategorias();
+    for(let c of data.categorias){
+        if(c.id == id){
+            return c.emoji;
+        }
+    }    
+}
                     
 async function listarPeliculas(data, frecuencia) {
     //let lista = await filtroPorFecha(await getPeliculas());
+    
         let html="";
         for(let p of data){
             html += `<ion-toolbar>
                         <ion-list>
                             <ion-item>
                                 <ion-label>${p.nombre}</ion-label>
+                                <ion-label>${await getEmojiById(p.idCategoria)}</ion-label>
                             <ion-buttons slot="end">
                                 <ion-button color="danger" onclick="eliminarPelicula('${p.id}')">Delete</ion-button>
                             </ion-buttons>
