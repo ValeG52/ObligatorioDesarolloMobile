@@ -138,11 +138,9 @@ function Navegar(evt){
         listar.style.display = "block";
     }else if(ruta == "/estads"){
         contarCategorias();
-        calcularPorcentajeMayorADoce();
-        //calcularPorcentajeResto();
         estads.style.display = "block";
-        
     }else if(ruta == "/mapa"){
+        cargarMapa();
         mapa.style.display = "block";
     }else if (ruta == "/logout"){
         Logout();
@@ -168,7 +166,7 @@ async function ocultarPantallas(){
 }
 
 function validarRegistro(user,pass,pais){
-// TODO: Hacer funcion
+// TODO: Hacer funcion que no sea vacio
 
     return true;
 
@@ -269,21 +267,7 @@ async function contarCategorias(){
     document.querySelector("#aventura").innerHTML = "Aventura " + aventura;
     document.querySelector("#fantasia").innerHTML = "Fantasía " + fantasia;
 }
-
-async function calcularPorcentajeMayorADoce(){
-    let data = await getPeliculas();
-    let total = data.peliculas.length
-    let num = 0;
-    for(let p of data.peliculas){
-        if(p.idCategoria == 1 || p.idCategoria == 4 || p.idCategoria == 5 ){
-            num+=1;
-        }
-    } let porcentaje = (num*100)/total;
-    document.querySelector("#porcentajeMayores").innerHTML = "Porcentaje "+ porcentaje.toFixed(0) + "%";
-    document.querySelector("#porcentajeResto").innerHTML = `Porcentaje ${100-porcentaje.toFixed(0)}% `;
-    
-}
-
+ 
 
 async function listarCategorias() {
     let data = await getCategorias();
@@ -489,8 +473,26 @@ async function eliminarPelicula(idPelicula){
     }
 
 }
+var map = null;
+function crearMapa(){
 
+    if(map != null){
+        map.remuve();
+    }
+    map = L.map('map').setView([-34.902626914855134, -56.18755118659583], 16);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        minZoom: 1,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
 
+        var marker = L.marker([-34.902626914855134, -56.18755118659583]).addTo(map).
+        bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
+}
+
+function cargarMapa(){
+    setTimeout(function(){crearMapa(), 100});
+}
 
 
 /* ------------------------------------------------ FIN LOGICA DE NEGOCIO--------------------------------------------------------------- */
