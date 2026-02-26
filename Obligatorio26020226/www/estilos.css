@@ -1,0 +1,9 @@
+#map { height: 100%; }
+
+
+ion-col {
+    background-color: #3727cc;
+    border: solid 1px #fff;
+    color: #fff;
+    text-align: center;
+  }
